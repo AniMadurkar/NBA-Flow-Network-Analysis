@@ -4,7 +4,7 @@ import argparse
 import time
 from tqdm import tqdm
 
-from nba_api.stats.endpoints import playerdashptpass
+from nba_api.stats.endpoints import playerdashptpass, commonplayerinfo
 
 def GroupGameDetails(game_details):
 
@@ -27,6 +27,7 @@ def ReadAndCleanFiles():
     teams = pd.read_csv('teams.csv')
     ranking = pd.read_csv('ranking.csv')
     games_details = pd.read_csv('games_details.csv')
+    all_nba_passes = pd.read_pickle('all_nba_passes.pkl')
     
     games_dtypes = {'GAME_ID': 'int32', 'GAME_STATUS_TEXT': 'str', 'HOME_TEAM_ID': 'int32',
                     'VISITOR_TEAM_ID': 'int32', 'SEASON': 'int32', 'TEAM_ID_home': 'int32', 
@@ -68,7 +69,7 @@ def ReadAndCleanFiles():
     ranking = ranking.astype(ranking_dtypes)
     games_details = games_details.astype(games_details_dtypes)
 
-    return games, teams, players, ranking, games_details, game_details_grouped
+    return games, teams, players, ranking, games_details, game_details_grouped, all_nba_passes
 
 def CreateTeamStatsDataframe(games, teams, game_details_grouped):
 
@@ -186,6 +187,28 @@ def CollectPlayerPassingData(players, season, season_playoff_games, game_details
 
     return player_df
 
+def GetPlayerPosition(player_id):
+    
+    player_info = commonplayerinfo.CommonPlayerInfo(player_id=player_id)
+    position = player_info.common_player_info.get_data_frame()['POSITION'][0]
+    
+    time.sleep(1)
+    return position
+
+def NormalizePassingFrequency(player_df, all_nba_passes):
+    
+    player_positions = {}
+    for player_id in players_df['PLAYER_ID'].unique():
+        player_positions[player_id] = GetPlayerPosition(player_id)
+
+    player_positions_df = pd.DataFrame.from_dict(player_positions, orient='index', columns=['POSITION']).reset_index().rename(columns={'index': 'PLAYER_ID'})
+    players_df = players_df.merge(player_positions_df, on=['PLAYER_ID'], how='left')
+    players_df = players_df.merge(all_nba_passes, on=['POSITION'], how='left')
+    
+    players_df['FREQUENCY'] = (players_df['FREQUENCY'] - players_df['mean']) / players_df['std']
+    
+    return players_df
+    
 def writeDictToCSV(players_dict):
 
     players_df = pd.concat(players_dict.values(), ignore_index=True)
@@ -202,14 +225,16 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     print("Getting all games, teams, players and more...")
-    games, teams, players, ranking, games_details, game_details_grouped = ReadAndCleanFiles()
+    games, teams, players, ranking, games_details, game_details_grouped, all_nba_passes = ReadAndCleanFiles()
     print("Getting all stats for teams...")
     team_games_stats = CreateTeamStatsDataframe(games, teams, game_details_grouped)
     print("Filtering for the season chosen and only games after first playoff dates...")
     season_playoff_games = FilteringToSeasonPlayoffs(team_games_stats, args['season'], args['first_playoff_date'])
     print("Getting relevant player data for all games in the season (this takes a long time)...")
     players_df = CollectPlayerPassingData(players, args['season'], season_playoff_games, game_details)
+    print("Normalizing player passing data by position...")
+    normalized_players_df = NormalizePassingFrequency(players_df, all_nba_passes)
     print("Writing player dataframe to file...")
-    players_df.to_csv('players_df.csv')
+    normalized_players_df.to_csv(f'{args['season']}_Playoffs_Players.csv')
     print("Writing season games dataframe to file...")
     season_playoff_games.to_csv(f'{args['season']}_Playoffs.csv', index=False)
