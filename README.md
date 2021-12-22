@@ -24,8 +24,14 @@ git clone https://github.com/AniMadurkar/NBA-Graph-Machine-Learning.git
 
 ## Getting Your Own Data
 
-Run the python script with your chosen season to get playoff data for it.
+Run the python script with your chosen season and the date of the first playoff game like below.
 
 ``` python
-python .py
+python nba_player_graph_data.py 2019 2020-08-17
 ```
+
+Warning: This will take a relatively long time. It's looking at each game and each player for the game because that's how the nba_api requires to get the passing data. Also time.sleeps had to be included to make sure we're not crashing due to overloading the api.
+
+This will output two files after:
+1. 2019_Playoffs - relevant data on the teams/games during the 2019-20 playoffs
+2. 2019_Playoffs_Players - relevant data on the players during the 2019-20 playoffs
