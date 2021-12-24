@@ -2,9 +2,11 @@
 
 This repo is the hub for a passion project of mine where I analyzed NBA Playoff games via flow dynamics through graphs. This was an extension of my independent study during my Masters program and I created a script that can help you get your own data if you desire.
 
+The initial Network Analysis story for this project is live here: https://animadurkar.medium.com/network-analysis-of-nba-playoffs-via-flow-dynamics-e5d5de70d4af
+
 ## The Objective
 
-Model NBA games as a graph with players as nodes, the pass frequencies between players as edges and shot frequencies to two non-player nodes (Shot Made and Shot Miss). After doing this for each game, you can calculate specific centrality and flow metrics that can be a strong metric for individual and team performance.
+Model NBA games as a graph with players as nodes, the pass frequencies between players as edges and shot frequencies to two non-player nodes (Shot Made and Shot Miss). After doing this for each game, you can calculate specific centrality and flow metrics that can be a strong metric for individual and team performance. We can conduct higher level machine learning objectives such as node prediction, edge classification, and graph embeddings as well.
 
 This script leverages the files in this Kaggle dataset as a start:https://www.kaggle.com/nathanlauga/nba-games
 
