@@ -1,4 +1,4 @@
-# NBA Network Analysis
+# NBA Flow Network Analysis
 
 This repo is the hub for a passion project of mine where I analyzed NBA Playoff games via flow dynamics through graphs. This was an extension of my independent study during my Masters program and I created a script that can help you get your own data if you desire.
 
