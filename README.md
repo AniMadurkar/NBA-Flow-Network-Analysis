@@ -1,8 +1,8 @@
-# NBA Graph Machine Learning
+# NBA Network Analysis
 
 This repo is the hub for a passion project of mine where I analyzed NBA Playoff games via flow dynamics through graphs. This was an extension of my independent study during my Masters program and I created a script that can help you get your own data if you desire.
 
-The initial Network Analysis story for this project is live here: [Network Analysis of NBA Playoffs via Flow Dynamics](https://animadurkar.medium.com/network-analysis-of-nba-playoffs-via-flow-dynamics-e5d5de70d4af)
+The story for this project is live here: [Network Analysis of NBA Playoffs via Flow Dynamics](https://animadurkar.medium.com/network-analysis-of-nba-playoffs-via-flow-dynamics-e5d5de70d4af)
 
 ## The Objective
 
