@@ -231,7 +231,7 @@ if __name__ == '__main__':
     print("Filtering for the season chosen and only games after first playoff dates...")
     season_playoff_games = FilteringToSeasonPlayoffs(team_games_stats, args['season'], args['first_playoff_date'])
     print("Getting relevant player data for all games in the season (this takes a long time)...")
-    players_df = CollectPlayerPassingData(players, args['season'], season_playoff_games, game_details)
+    players_df = CollectPlayerPassingData(players, args['season'], season_playoff_games, games_details)
     print("Normalizing player passing data by position...")
     normalized_players_df = NormalizePassingFrequency(players_df, all_nba_passes)
     print("Writing player dataframe to file...")
